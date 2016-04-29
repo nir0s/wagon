@@ -13,6 +13,7 @@ or.. it is just a set of (Python) Wheels.
 
 Cloudify Plugins are packaged as sets of Python [Wheels](https://packaging.python.org/en/latest/distributing.html#wheels) in tar.gz archives and so we needed a tool to create such entities; hence, Wagon.
 
+NOTE: Starting with version 0.4.3 Repex officially supports Windows.
 
 * Wagon requires pip 1.4+ to work as this is the first version of pip to support Wheels.
 * Wagon currently supports Python 2.6.x and Python 2.7.x. Python 2.5 will not be supported as it is not supported by pip.

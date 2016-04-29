@@ -92,7 +92,7 @@ class Wagon(object):
             package_name, package_version = \
                 self.get_source_name_and_version(source)
         else:
-            package_name, package_version = None, None
+            package_name, package_version = 'requirements', None
 
         excluded_packages = excluded_packages or []
         if excluded_packages:
@@ -505,6 +505,43 @@ def create(source, with_requirements, format, force, keep_wheels, exclude,
     # TODO: Let the user provide supported Architectures.
     logger.configure()
     packager = Wagon(source, verbose)
+    packager.create(
+        with_requirements, force, keep_wheels, exclude, output_directory,
+        pyver, validate, wheel_args, format)
+
+
+@click.command()
+@click.option('-r', '--requirements', required=False,
+              help='Source URL or local path to requirements file.')
+@click.option('-t', '--format', required=False, default='tar.gz',
+              type=click.Choice(['tar.gz', 'zip']),
+              help='Which file format to generate.')
+@click.option('-f', '--force', default=False, is_flag=True,
+              help='Force overwriting existing output file.')
+@click.option('--keep-wheels', default=False, is_flag=True,
+              help='Keep wheels path after creation.')
+@click.option('-x', '--exclude', default=None, multiple=True,
+              help='Specific packages to exclude from the archive. '
+                   'This argument can be provided multiple times.')
+@click.option('-o', '--output-directory', default='.',
+              help='Output directory for the archive.')
+@click.option('--pyver', default=None, multiple=True,
+              help='Explicit Python versions supported (e.g. py2, py3). '
+                   'This argument can be provided multiple times.')
+@click.option('--validate', default=False, is_flag=True,
+              help='Runs a postcreation validation on the archive.')
+@click.option('-a', '--wheel-args', required=False,
+              help='Allows to pass additional arguments to `pip wheel`. '
+                   '(e.g. --no-cache-dir -c constains.txt')
+@click.option('-v', '--verbose', default=False, is_flag=True)
+def requirements(requirements, format, force, keep_wheels, exclude,
+                 output_directory, pyver, validate, wheel_args, verbose):
+    """Creates a requirements Wagon.
+    """
+    with_requirements = requirements
+
+    logger.configure()
+    packager = Wagon(None, verbose)
     packager.create(
         with_requirements, force, keep_wheels, exclude, output_directory,
         pyver, validate, wheel_args, format)
